@@ -27,4 +27,19 @@
     <string name="password_number">Hasło musi zawierać cyfrę</string>
     <string name="password_requirements">Wymagania: minimum 6 znaków, 1 wielka litera, 1 cyfra</string>
 
+    <!-- Home Screen -->
+    <string name="hello">Cześć,</string>
+    <string name="profile">Profil</string>
+    <string name="search_desks">Szukaj biurek i sal...</string>
+    <string name="search">Szukaj</string>
+    <string name="filter_by">Filtruj po:</string>
+    <string name="all_desks">Wszystkie</string>
+    <string name="favorites">Ulubione</string>
+    <string name="available">Dostępne</string>
+    <string name="conference_rooms">Sale konf.</string>
+    <string name="available_spaces">Dostępne przestrzenie</string>
+    <string name="location">Lokalizacja</string>
+    <string name="add_to_favorites">Dodaj do ulubionych</string>
+    <string name="reserve">Rezerwuj</string>
+
 </resources>

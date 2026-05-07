@@ -1,1 +1,31 @@
-/build
+# Environment files — NEVER commit these
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+
+# Android
+*.iml
+.gradle/
+local.properties
+.idea/
+*.keystore
+android-app/.idea/
+android-app/app/build/
+android-app/build/
+
+# Docker
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
