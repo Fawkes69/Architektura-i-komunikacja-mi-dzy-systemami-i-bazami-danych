@@ -1,3 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Zarządzanie_miejscami</string>
+    <string name="app_name">Zarządzanie Miejscami</string>
+
+    <!-- Login Screen -->
+    <string name="login_title">Logowanie</string>
+    <string name="login_subtitle">Zaloguj się, aby uzyskać dostęp do biurek i sal</string>
+    <string name="email">Email</string>
+    <string name="password">Hasło</string>
+    <string name="login">Zaloguj się</string>
+    <string name="register_new_account">Utwórz nowe konto</string>
+    <string name="or">lub</string>
+    <string name="email_required">Email jest wymagany</string>
+    <string name="invalid_email">Podaj prawidłowy email</string>
+    <string name="password_required">Hasło jest wymagane</string>
+    <string name="password_too_short">Hasło musi mieć co najmniej 6 znaków</string>
+
+    <!-- Register Screen -->
+    <string name="register_title">Rejestracja</string>
+    <string name="register_subtitle">Utwórz konto, aby rezerwować miejsca pracy</string>
+    <string name="confirm_password">Potwierdź hasło</string>
+    <string name="register">Zarejestruj się</string>
+    <string name="back_to_login">Powrót do logowania</string>
+    <string name="confirm_password_required">Potwierdzenie hasła jest wymagane</string>
+    <string name="passwords_not_match">Hasła nie są takie same</string>
+    <string name="password_uppercase">Hasło musi zawierać dużą literę</string>
+    <string name="password_number">Hasło musi zawierać cyfrę</string>
+    <string name="password_requirements">Wymagania: minimum 6 znaków, 1 wielka litera, 1 cyfra</string>
+
 </resources>
