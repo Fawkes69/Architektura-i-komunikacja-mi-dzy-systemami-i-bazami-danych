@@ -7,12 +7,17 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import com.example.zarzdzanie_miejscami.data.SessionManager
+import com.example.zarzdzanie_miejscami.network.ApiClient
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
+    private lateinit var sessionManager: SessionManager
     private lateinit var emailInputLayout: TextInputLayout
     private lateinit var emailEditText: TextInputEditText
     private lateinit var passwordInputLayout: TextInputLayout
@@ -22,6 +27,13 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sessionManager = SessionManager(applicationContext)
+
+        sessionManager.getAccessToken()?.let {
+            openHome()
+            return
+        }
+
         enableEdgeToEdge()
         setContentView(R.layout.activity_login)
 
@@ -62,7 +74,6 @@ class LoginActivity : AppCompatActivity() {
 
         var isValid = true
 
-        // Walidacja emaila
         if (email.isEmpty()) {
             emailInputLayout.error = getString(R.string.email_required)
             isValid = false
@@ -73,7 +84,6 @@ class LoginActivity : AppCompatActivity() {
             emailInputLayout.error = null
         }
 
-        // Walidacja hasła
         if (password.isEmpty()) {
             passwordInputLayout.error = getString(R.string.password_required)
             isValid = false
@@ -91,12 +101,40 @@ class LoginActivity : AppCompatActivity() {
         val email = emailEditText.text.toString().trim()
         val password = passwordEditText.text.toString()
 
-        // TODO: Implementacja logiki logowania (Firebase, serwer itp.)
-        Toast.makeText(this, "Logowanie: $email", Toast.LENGTH_SHORT).show()
+        lifecycleScope.launch {
+            loginButton.isEnabled = false
+            val response = try {
+                ApiClient.authApi.login(email, password)
+            } catch (exception: Exception) {
+                loginButton.isEnabled = true
+                Toast.makeText(this@LoginActivity, getString(R.string.api_error), Toast.LENGTH_SHORT).show()
+                return@launch
+            }
 
-        // Na razie nawigacja do głównego ekranu
-        // startActivity(Intent(this, MainActivity::class.java))
-        // finish()
+            loginButton.isEnabled = true
+
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    sessionManager.saveTokens(body.accessToken, body.refreshToken)
+                    Toast.makeText(this@LoginActivity, getString(R.string.login_success), Toast.LENGTH_SHORT).show()
+                    openHome()
+                } else {
+                    Toast.makeText(this@LoginActivity, getString(R.string.api_error), Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(
+                    this@LoginActivity,
+                    response.errorBody()?.string()?.takeIf { it.isNotBlank() } ?: getString(R.string.login_failed),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    private fun openHome() {
+        startActivity(Intent(this, HomeActivity::class.java))
+        finish()
     }
 
     private fun isValidEmail(email: String): Boolean {
