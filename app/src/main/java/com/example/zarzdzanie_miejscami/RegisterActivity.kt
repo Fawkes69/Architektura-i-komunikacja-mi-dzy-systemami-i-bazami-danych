@@ -1,18 +1,23 @@
 package com.example.zarzdzanie_miejscami
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import com.example.zarzdzanie_miejscami.network.ApiClient
+import com.example.zarzdzanie_miejscami.network.RegisterRequest
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.launch
 
 class RegisterActivity : AppCompatActivity() {
 
+    private lateinit var fullNameInputLayout: TextInputLayout
+    private lateinit var fullNameEditText: TextInputEditText
     private lateinit var emailInputLayout: TextInputLayout
     private lateinit var emailEditText: TextInputEditText
     private lateinit var passwordInputLayout: TextInputLayout
@@ -38,6 +43,8 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun initializeViews() {
+        fullNameInputLayout = findViewById(R.id.full_name_input_layout)
+        fullNameEditText = findViewById(R.id.full_name_edit_text)
         emailInputLayout = findViewById(R.id.email_input_layout)
         emailEditText = findViewById(R.id.email_edit_text)
         passwordInputLayout = findViewById(R.id.password_input_layout)
@@ -61,13 +68,20 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun validateForm(): Boolean {
+        val fullName = fullNameEditText.text.toString().trim()
         val email = emailEditText.text.toString().trim()
         val password = passwordEditText.text.toString()
         val confirmPassword = confirmPasswordEditText.text.toString()
 
         var isValid = true
 
-        // Walidacja emaila
+        if (fullName.isEmpty()) {
+            fullNameInputLayout.error = getString(R.string.full_name_required)
+            isValid = false
+        } else {
+            fullNameInputLayout.error = null
+        }
+
         if (email.isEmpty()) {
             emailInputLayout.error = getString(R.string.email_required)
             isValid = false
@@ -78,11 +92,10 @@ class RegisterActivity : AppCompatActivity() {
             emailInputLayout.error = null
         }
 
-        // Walidacja hasła
         if (password.isEmpty()) {
             passwordInputLayout.error = getString(R.string.password_required)
             isValid = false
-        } else if (password.length < 6) {
+        } else if (password.length < 8) {
             passwordInputLayout.error = getString(R.string.password_too_short)
             isValid = false
         } else if (!password.matches(Regex(".*[A-Z].*"))) {
@@ -95,7 +108,6 @@ class RegisterActivity : AppCompatActivity() {
             passwordInputLayout.error = null
         }
 
-        // Walidacja potwierdzenia hasła
         if (confirmPassword.isEmpty()) {
             confirmPasswordInputLayout.error = getString(R.string.confirm_password_required)
             isValid = false
@@ -110,15 +122,39 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun performRegistration() {
+        val fullName = fullNameEditText.text.toString().trim()
         val email = emailEditText.text.toString().trim()
         val password = passwordEditText.text.toString()
 
-        // TODO: Implementacja logiki rejestracji (Firebase, serwer itp.)
-        Toast.makeText(this, "Rejestracja: $email", Toast.LENGTH_SHORT).show()
+        lifecycleScope.launch {
+            registerButton.isEnabled = false
+            val response = try {
+                ApiClient.authApi.register(
+                    RegisterRequest(
+                        email = email,
+                        fullName = fullName,
+                        password = password
+                    )
+                )
+            } catch (exception: Exception) {
+                registerButton.isEnabled = true
+                Toast.makeText(this@RegisterActivity, getString(R.string.api_error), Toast.LENGTH_SHORT).show()
+                return@launch
+            }
 
-        // Po udanej rejestracji powrót do logowania
-        // startActivity(Intent(this, LoginActivity::class.java))
-        // finish()
+            registerButton.isEnabled = true
+
+            if (response.isSuccessful) {
+                Toast.makeText(this@RegisterActivity, getString(R.string.register_success), Toast.LENGTH_SHORT).show()
+                finish()
+            } else {
+                Toast.makeText(
+                    this@RegisterActivity,
+                    response.errorBody()?.string()?.takeIf { it.isNotBlank() } ?: getString(R.string.registration_failed),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 
     private fun isValidEmail(email: String): Boolean {

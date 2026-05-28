@@ -789,14 +789,4 @@ ARCHITEKTURA (skrót)
   - Hilt: dependency injection (automatyczne wstrzykiwanie zależności)
   - Jetpack Compose: deklaratywny UI
 
-ROZSZERZENIA (co możesz dodać samodzielnie)
-  - Powiadomienia push (Firebase FCM) o zbliżającej się rezerwacji
-  - API Gateway (np. Nginx) przed dwoma serwisami — jeden port dla aplikacji
-  - Alembic migrations — wersjonowanie schematu bazy danych
-  - Testy jednostkowe (pytest dla backendu, JUnit dla Androida)
-  - Odświeżanie tokenu w tle (OkHttp Authenticator interceptor)
-  - Widok kalendarza rezerwacji
 
-================================================================================
-  GOTOWE! Powodzenia z projektem.
-================================================================================

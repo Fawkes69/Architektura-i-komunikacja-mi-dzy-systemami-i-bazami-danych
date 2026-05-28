@@ -34,6 +34,25 @@
             android:textColor="#999999"
             android:paddingBottom="40dp" />
 
+        <!-- Full name Input -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/full_name_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:hint="@string/full_name"
+            app:boxBackgroundMode="outline"
+            app:counterEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/full_name_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
         <!-- Email Input -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/email_input_layout"
